@@ -1,0 +1,29 @@
+[
+    {
+        "id": 1,
+        "views": 12345,
+        "comments": 456,
+        "likes": 7890,
+        "author": "exampleuser1",
+        "impact_score": 85,
+        "classification": "positive"
+    },
+    {
+        "id": 2,
+        "views": 67890,
+        "comments": 123,
+        "likes": 4567,
+        "author": "exampleuser2",
+        "impact_score": 60,
+        "classification": "neutral"
+    },
+    {
+        "id": 3,
+        "views": 54321,
+        "comments": 987,
+        "likes": 6543,
+        "author": "exampleuser3",
+        "impact_score": 75,
+        "classification": "negative"
+    }
+]

@@ -1,0 +1,28 @@
+# Python
+venv/
+*.pyc
+__pycache__/
+*.log  # Log files
+*.sqlite3  # SQLite database files (if applicable)
+
+# Environment variables
+.env
+
+# Database
+backend/database/
+
+# Node.js
+frontend/node_modules/
+frontend/dist/  # Build output folder for Vite
+
+# IDE files
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db  # Windows thumbnail cache files
+
+# Git and OS-specific files
+*.swp  # Swap files for vim
+*.swo  # Swap files for vim
+*.bak  # Backup files
+*.tmp  # Temporary files
