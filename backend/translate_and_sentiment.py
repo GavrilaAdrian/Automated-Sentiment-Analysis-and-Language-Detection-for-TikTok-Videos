@@ -8,7 +8,18 @@ load_dotenv()
 # Fetch the API key from the environment
 openai.api_key = os.getenv("OPENAI_API_KEY")
 
-def translate_text(text, target_language):
+def translate_text(text: str, target_language: str) -> str | None:
+    """
+    Translates the given text from the specified target language into English.
+    
+    Args:
+        text (str): The text to be translated.
+        target_language (str): The language of the input text.
+        
+     Returns:
+        str | None: The translated text in English, or None if an error occurs.
+    
+    """
     try:
         # Construct the prompt for translation
         prompt = (
@@ -40,7 +51,22 @@ def translate_text(text, target_language):
         print(f"Error in translation: {e}")
         return None
 
-def get_sentiment(text, target_language):
+def get_sentiment(text: str, target_language: str) -> str | None:
+    """
+    Analyzes the sentiment of the given text and returns a rating between 0 and 100.
+
+     The sentiment rating represents the impact of the text on Raiffeisen Bank:
+    - 0 indicates the text damages the company's image or trustability.
+    - 100 indicates the text improves the company's image or trustability.
+    - 50 is used for neutral or incomprehensible text.
+
+    Args:
+        text (str): The text to be analyzed.
+        target_language (str): The language of the input text.
+        
+    Returns:
+        str | None: A numeric rating (0-100) as a string, or None if an error occurs.
+    """
     try:
         # Construct the prompt for sentiment analysis
         prompt = (

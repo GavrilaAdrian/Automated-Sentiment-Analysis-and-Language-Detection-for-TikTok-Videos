@@ -12,6 +12,7 @@ from pymongo import MongoClient
 from dotenv import load_dotenv
 from translate_and_sentiment import translate_text, get_sentiment
 from transcribe_and_detect_language import transcriere_si_detectie_limbaj
+from typing import List, Dict, Optional
 
 # Load environment variables
 load_dotenv()
@@ -30,7 +31,15 @@ linkNumbers = 2
 generate_Data = False
 create_Json = True
 
-def save_tiktok(link, output_dir='database', datafile='data.csv'):
+def save_tiktok(link: str, output_dir: str = 'database', datafile: str = 'data.csv') -> None:
+    """
+    Download a TikTok video and move it to the specified directory.
+
+    Args:
+        link (str): The TikTok video URL.
+        output_dir (str): The directory to save the video. Defaults to 'database'.
+        datafile (str): The path to the CSV file to save metadata. Defaults to 'data.csv'.
+    """
     # Download the video and data
     pyk.save_tiktok(link, True, datafile)
     video_filename = link.replace('https://www.tiktok.com/', '').replace('/', '_') + '.mp4'  # Get video name
@@ -42,7 +51,24 @@ def save_tiktok(link, output_dir='database', datafile='data.csv'):
     video_path = os.path.join(output_dir, video_filename)
     shutil.move(video_filename, video_path)
 
-def fetch_tiktok_video_urls(search_query, num_links=10, file_path='links.txt', create_file=True):
+def fetch_tiktok_video_urls(
+    search_query: str,
+    num_links: int = 10,
+    file_path: str = 'links.txt',
+    create_file: bool = True
+) -> List[str]:
+    """
+    Fetch TikTok video URLs based on a search query.
+
+    Args:
+        search_query (str): The search query.
+        num_links (int): The number of video links to fetch. Defaults to 10.
+        file_path (str): The file path to save the URLs. Defaults to 'links.txt'.
+        create_file (bool): Whether to create a file with the URLs. Defaults to True.
+
+    Returns:
+        List[str]: A list of video URLs.
+    """
     base_url = f"https://www.tiktok.com/tag/{search_query}"
 
     edge_options = webdriver.EdgeOptions()
@@ -76,7 +102,20 @@ def fetch_tiktok_video_urls(search_query, num_links=10, file_path='links.txt', c
     driver.quit()
     return video_urls
 
-def organize_data_from_csv(datafile='data.csv', output_dir='database'):  # Return a list of dictionaries
+def organize_data_from_csv(
+    datafile: str = 'data.csv',
+    output_dir: str = 'database'
+) -> List[Dict[str, str]]:
+    """
+    Process data from a CSV file, adding translations, transcriptions, and sentiment analysis.
+
+    Args:
+        datafile (str): The CSV file path containing the data. Defaults to 'data.csv'.
+        output_dir (str): The directory containing video files. Defaults to 'database'.
+
+    Returns:
+        List[Dict[str, str]]: A list of processed video data dictionaries.
+    """    
     data = []
     with open(datafile, mode='r', encoding='utf-8') as file:
         csv_reader = csv.DictReader(file)
@@ -114,7 +153,13 @@ def organize_data_from_csv(datafile='data.csv', output_dir='database'):  # Retur
     return data  # Return the data as a list of dictionaries
 
 
-def save_to_mongodb(data):
+def save_to_mongodb(data: List[Dict[str, str]]) -> None:
+    """
+    Save processed video data to MongoDB.
+
+    Args:
+        data (List[Dict[str, str]]): A list of processed video data dictionaries.
+    """
     try:
         if isinstance(data, list):
             replaced_count = 0
@@ -142,7 +187,13 @@ def save_to_mongodb(data):
         print(f"An error occurred while saving to MongoDB: {e}")
 
 # Use this method to delete everything from the data.csv file, except the first row
-def keep_header_only(file_path):
+def keep_header_only(file_path: str) -> None:
+    """
+    Retain only the header row in a CSV file for processing only the fetched tiktoks.
+
+    Args:
+        file_path (str): The path to the CSV file.
+    """
     try:
         # Read the first row (header) from the file
         with open(file_path, 'r') as file:

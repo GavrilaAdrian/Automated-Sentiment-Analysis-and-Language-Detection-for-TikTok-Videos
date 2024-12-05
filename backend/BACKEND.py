@@ -5,6 +5,7 @@ from datetime import datetime
 import os
 from dotenv import load_dotenv
 from app import save_tiktok, fetch_tiktok_video_urls, organize_data_from_csv, save_to_mongodb, keep_header_only
+from typing import Dict, Any
 
 # Load environment variables from .env file
 load_dotenv()
@@ -23,7 +24,14 @@ db = client["tiktok_database"]
 tiktoks_collection = db["tiktoks"]
 
 @app.route('/process', methods=['POST'])
-def process_videos():
+def process_videos() -> Any:
+    """
+    Endpoint to process TikTok videos. It fetches video URLs, processes metadata,
+    and saves the data to MongoDB.
+
+    Returns:
+        JSON response indicating success or failure.
+    """
     data = request.json
     count = data.get('count', 1)  # Default to 1 video if not specified
     count = min(max(1, count), 100)  # Restrict to range 1–100
@@ -52,7 +60,13 @@ def process_videos():
 
 
 @app.route('/videos', methods=['GET'])
-def get_processed_videos():
+def get_processed_videos() -> Any:
+    """
+    Endpoint to fetch processed TikTok videos from MongoDB.
+
+    Returns:
+        JSON response containing the list of processed videos.
+    """
     try:
         print("Fetching videos from MongoDB...")
         videos = list(tiktoks_collection.find({}, {
@@ -86,7 +100,16 @@ def get_processed_videos():
 
 
 @app.route('/video/<video_id>', methods=['GET'])
-def get_video_details(video_id):
+def get_video_details(video_id: str) -> Any:
+    """
+    Endpoint to fetch detailed information about a specific video by its video_id.
+
+    Args:
+        video_id (str): The ID of the video to fetch.
+
+    Returns:
+        JSON response containing the video details or an error message if not found.
+    """
     try:
         # Query the database to fetch the video details by video_id
         video = tiktoks_collection.find_one(
@@ -125,7 +148,16 @@ def get_video_details(video_id):
 
 # For displaying video on DetailsPage.tsx
 @app.route('/video-files/<filename>')
-def serve_video_file(filename):
+def serve_video_file(filename: str) -> Any:
+    """
+    Endpoint to serve video files by filename.
+
+    Args:
+        filename (str): The name of the video file to serve.
+
+    Returns:
+        The video file as a response.
+    """
     return send_from_directory('database', filename)
 
 if __name__ == "__main__":

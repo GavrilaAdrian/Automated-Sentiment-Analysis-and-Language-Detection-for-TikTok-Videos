@@ -3,9 +3,22 @@ import whisper
 from conversion import convert_mp4_to_wav
 import gc
 import torch
+from typing import Tuple, Optional  # Ensure these are imported
 
 # Transcribe and detect language
-def transcriere_si_detectie_limbaj(video_link, VIDEO_DIR='database'):  # mp4 parameter file
+def transcriere_si_detectie_limbaj(video_link: str, VIDEO_DIR: str = 'database') -> Tuple[Optional[str], Optional[str]]:
+    """
+    Transcribes the audio from a video file and detects the language used.
+
+    Args:
+        video_link (str): The name of the video file to be processed.
+        VIDEO_DIR (str): The directory where the video files are stored. Defaults to 'database'.
+
+    Returns:
+        Tuple[Optional[str], Optional[str]]:
+            - The detected language as a string (e.g., "en" for English), or None if transcription fails.
+            - The transcription of the video as a string, or None if transcription fails.
+    """ 
     results = []
     
     # Use if CUDA is available
